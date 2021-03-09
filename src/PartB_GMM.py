@@ -31,7 +31,7 @@ def plot_gmm(gmm, X, label=True, ax=None):
 # ------------------------------------------------------------------------------------------------------
 
 data = pd.read_csv('data/UKM.csv', index_col=None, header=None).values
-# np.random.shuffle(data)
+np.random.shuffle(data)
 X = data[:, 0:5]
 Y = data[:, 5]
 
@@ -40,39 +40,59 @@ trainY = Y[:int(0.8*len(X))]
 testX = X[int(0.8*len(X)):, :]
 testY = Y[int(0.8*len(X)):]
 classes = np.unique(Y)
-K = 1
+_K = [1, 5, 10]
 
-xx=0
-yy=4
-pgm = []
-for i in range(len(classes)):
-    pgm += [GaussianMixture(n_components=K, random_state=0).fit(trainX[trainY==classes[i]][:, [xx,yy]])]
-for i in range(len(classes)):
-    plt.figure(1)
-    plot_gmm(pgm[i], trainX[trainY==classes[i]][:, [xx,yy]], label=False)
-for i in range(len(classes)):
-    plt.figure(2)
-    plot_gmm(pgm[i], testX[testY==classes[i]][:, [xx,yy]], label=False)
-
-
-gm = []
-for i in range(len(classes)):
-    gm += [GaussianMixture(n_components=K, random_state=0).fit(trainX[trainY==classes[i]])]
-
-y = []
-for i in range(len(classes)):
-    y += [multivariate_normal.pdf(np.array(testX), mean=gm[i].means_[0], cov=gm[i].covariances_[0])]
-
-for j in range(1, K):
+for K in range(len(_K)):
+    xx=0
+    yy=4
+    pgm = []
     for i in range(len(classes)):
-        y[i] = np.maximum(y[i], multivariate_normal.pdf(np.array(testX), mean=gm[i].means_[j], cov=gm[i].covariances_[j]))
+        pgm += [GaussianMixture(n_components=_K[K], random_state=0).fit(trainX[trainY==classes[i]][:, [xx,yy]])]
+    for i in range(len(classes)):
+        plt.figure(1)
+        plot_gmm(pgm[i], trainX[trainY==classes[i]][:, [xx,yy]], label=False)
+    for i in range(len(classes)):
+        plt.figure(2)
+        plot_gmm(pgm[i], testX[testY==classes[i]][:, [xx,yy]], label=False)
 
-ry = testY.copy()
-for i in range(len(classes)):
-    tmp = (y[i]>=y[0])
-    for j in range(1, len(classes)):
-        tmp = np.logical_and(tmp, y[i]>=y[j])
-    ry[tmp] = classes[i]
-print(1-np.sum(ry!=testY)/len(testY))
+    # plt.show()
 
-plt.show()
+res = [0.0, 0.0, 0.0]
+for K in range(len(_K)):
+    for time in range(5):
+        np.random.shuffle(data)
+        X = data[:, 0:5]
+        Y = data[:, 5]
+        for fold in range(5):
+            trainX = np.delete(X, np.s_[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X))], axis=0)
+            trainY = np.delete(Y, np.s_[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X))], axis=0)
+            testX = X[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X)), :]
+            testY = Y[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X))]
+
+            gm = []
+            for i in range(len(classes)):
+                gm += [GaussianMixture(n_components=_K[K], random_state=0).fit(trainX[trainY==classes[i]])]
+
+            y = []
+            for i in range(len(classes)):
+                y += [multivariate_normal.pdf(np.array(testX), mean=gm[i].means_[0], cov=gm[i].covariances_[0])]
+
+            for j in range(1, _K[K]):
+                for i in range(len(classes)):
+                    y[i] = np.maximum(y[i], multivariate_normal.pdf(np.array(testX), mean=gm[i].means_[j], cov=gm[i].covariances_[j]))
+
+            ry = testY.copy()
+            for i in range(len(classes)):
+                tmp = (y[i]>=y[0])
+                for j in range(1, len(classes)):
+                    tmp = np.logical_and(tmp, y[i]>=y[j])
+                ry[tmp] = classes[i]
+            res[K] += 1-np.sum(ry!=testY)/len(testY)
+    res[K] /= 25
+
+BK = _K[np.argmax(np.array(res))]
+print("Best K:")
+print(BK)
+
+print("accuracy:")
+print(np.max(np.array(res)))
