@@ -14,16 +14,13 @@ def draw_ellipse(position, covariance, ax=None, **kwargs):
     else:
         angle = 0
         width, height = 2 * np.sqrt(covariance)
-    
     for nsig in range(1, 4):
-        ax.add_patch(Ellipse(position, nsig * width, nsig * height,
-                             angle, **kwargs))
+        ax.add_patch(Ellipse(position, nsig * width, nsig * height, angle, **kwargs))
 
 def plot_gmm(gmm, X, label=True, ax=None):
     ax = ax or plt.gca()
     ax.scatter(X[:, 0], X[:, 1], s=40, zorder=2)
     ax.axis('equal')
-    
     w_factor = 0.2 / gmm.weights_.max()
     for pos, covar, w in zip(gmm.means_, gmm.covariances_, gmm.weights_):
         draw_ellipse(pos, covar, alpha=w * w_factor)
@@ -55,8 +52,9 @@ for K in range(len(_K)):
         plt.figure(2)
         plot_gmm(pgm[i], testX[testY==classes[i]][:, [xx,yy]], label=False)
 
-    # plt.show()
+    plt.show()
 
+train_res = [0.0, 0.0, 0.0]
 res = [0.0, 0.0, 0.0]
 for K in range(len(_K)):
     for time in range(5):
@@ -75,6 +73,22 @@ for K in range(len(_K)):
 
             y = []
             for i in range(len(classes)):
+                y += [multivariate_normal.pdf(np.array(trainX), mean=gm[i].means_[0], cov=gm[i].covariances_[0])]
+
+            for j in range(1, _K[K]):
+                for i in range(len(classes)):
+                    y[i] = np.maximum(y[i], multivariate_normal.pdf(np.array(trainX), mean=gm[i].means_[j], cov=gm[i].covariances_[j]))
+
+            ry = trainY.copy()
+            for i in range(len(classes)):
+                tmp = (y[i]>=y[0])
+                for j in range(1, len(classes)):
+                    tmp = np.logical_and(tmp, y[i]>=y[j])
+                ry[tmp] = classes[i]
+            train_res[K] += 1-np.sum(ry!=trainY)/len(trainY)
+
+            y = []
+            for i in range(len(classes)):
                 y += [multivariate_normal.pdf(np.array(testX), mean=gm[i].means_[0], cov=gm[i].covariances_[0])]
 
             for j in range(1, _K[K]):
@@ -89,10 +103,14 @@ for K in range(len(_K)):
                 ry[tmp] = classes[i]
             res[K] += 1-np.sum(ry!=testY)/len(testY)
     res[K] /= 25
+    train_res[K] /= 25
+
+print("Average train accuracy for each K = 1, 5, 10:")
+print(train_res)
+
+print("Average test accuracy for each K = 1, 5, 10:")
+print(res)
 
 BK = _K[np.argmax(np.array(res))]
 print("Best K:")
 print(BK)
-
-print("accuracy:")
-print(np.max(np.array(res)))
