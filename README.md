@@ -1,3 +1,34 @@
+# Fisher LDA, Gaussian Mixture Model Classifier, SVM, and Implementation paper related to HMM
+
+## Part A. Fisher LDA (Fisher Linear Discriminant Analysis)
+
+## Part B. Gaussian Mixture Model Classifier
+
+## Results of UKM dataset:
+
+### Plot of the training data and test data classified by GMM with K = 1:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/A.1.1.PNG?raw=true)
+
+### Plot of the training data and test data classified by GMM with K = 5:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/A.1.1.PNG?raw=true)
+
+### Plot of the training data and test data classified by GMM with K = 10:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/A.1.1.PNG?raw=true)
+
+### Train and test accuracy and best K:
+```
+Average train accuracy for each K = 1, 5, 10:
+[0.953489048356081, 0.9926344918155808, 0.9992261150977909]
+Average test accuracy for each K = 1, 5, 10:
+[0.9341025641025642, 0.8596229260935145, 0.7617496229260936]
+Best K:
+1
+```
+
+## Part C. Support Vector Machine (SVM)
+
+## Part D. Implementation Paper Related to HMM
+
 pip install xlrd
 
 
