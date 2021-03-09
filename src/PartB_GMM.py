@@ -28,9 +28,13 @@ def plot_gmm(gmm, X, label=True, ax=None):
 # ------------------------------------------------------------------------------------------------------
 
 data = pd.read_csv('data/UKM.csv', index_col=None, header=None).values
+# data = pd.read_csv('data/iris.data', sep=",", header=None).values
+# data = pd.read_csv('data/vehicle.dat', sep=" ", header=None).values[:, :19]
+# data = pd.read_csv('data/Health.dat', sep=" ", header=None).values
 np.random.shuffle(data)
-X = data[:, 0:5]
-Y = data[:, 5]
+X = data[:, 0:(len(data[0])-1)]
+Y = data[:, len(data[0])-1]
+
 
 trainX = X[:int(0.8*len(X)), :]
 trainY = Y[:int(0.8*len(X))]
@@ -41,7 +45,7 @@ _K = [1, 5, 10]
 
 for K in range(len(_K)):
     xx=0
-    yy=4
+    yy=1
     pgm = []
     for i in range(len(classes)):
         pgm += [GaussianMixture(n_components=_K[K], random_state=0).fit(trainX[trainY==classes[i]][:, [xx,yy]])]
@@ -59,8 +63,8 @@ res = [0.0, 0.0, 0.0]
 for K in range(len(_K)):
     for time in range(5):
         np.random.shuffle(data)
-        X = data[:, 0:5]
-        Y = data[:, 5]
+        X = data[:, 0:len(data[0])-1]
+        Y = data[:, len(data[0])-1]
         for fold in range(5):
             trainX = np.delete(X, np.s_[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X))], axis=0)
             trainY = np.delete(Y, np.s_[int(fold*0.2*len(X)):int((fold+1)*0.2*len(X))], axis=0)
