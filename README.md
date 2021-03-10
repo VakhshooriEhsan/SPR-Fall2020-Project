@@ -64,8 +64,58 @@ Plot of the training data and test data classified by GMM with K = 5:
 
 Plot of the training data and test data classified by GMM with K = 10:
 ![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/A.4.3.PNG?raw=true)
+<!-- ------------------------------------------------------------------------------------------------------------------ -->
 ## Part C. Support Vector Machine (SVM)
+### Results of Linear SVM:
+Plot the data and the decision boundary:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.1.PNG?raw=true)
 
+train accuracy:
+```
+accuracy for C=1:
+0.975
+accuracy for C=100:
+1.0
+
+```
+### Results of Kernel SVM for two-class:
+
+plots:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.2.3.PNG?raw=true)
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.2.1.PNG?raw=true)
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.2.2.PNG?raw=true)
+
+results:
+```
+Best C:
+10
+
+Best C:
+10
+Best gamma:
+4
+Best test accuracy:
+0.9469350573023801
+```
+### Results of Kernel SVM for two-class:
+
+plots:
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.3.3.PNG?raw=true)
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.3.1.PNG?raw=true)
+![representation](https://github.com/VakhshooriEhsan/SPR-Fall2020-Project/blob/master/docs/imgs/C.3.2.PNG?raw=true)
+results:
+```
+Best C:
+40
+
+Best C:
+10000
+Best gamma:
+4e-07
+Best test accuracy:
+0.7384795321637426
+```
+<!-- ------------------------------------------------------------------------------------------------------------------ -->
 ## Part D. Implementation Paper Related to HMM
 
 pip install xlrd
