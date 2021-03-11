@@ -45,7 +45,7 @@ class LDA:
     
         idx = eig_vals.argsort()[::-1]
  
-        eig_vals = eig_vals[idx] # Not needed
+        eig_vals = eig_vals[idx]
         eig_vecs = eig_vecs[:, idx]
         
         return eig_vecs
